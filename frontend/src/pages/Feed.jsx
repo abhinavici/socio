@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import API from "../services/api";
 import { getErrorMessage } from "../utils/http";
 import Navbar from "../components/Navbar";
+import Comments from "../components/Comments";
 
 function Feed() {
   const [posts, setPosts] = useState([]);
@@ -212,6 +213,11 @@ function Feed() {
               <span style={{ fontSize: "12px", color: "var(--muted)", marginLeft: "auto" }}>
                 {new Date(post.createdAt).toLocaleDateString()}
               </span>
+            </div>
+
+            {/* Comments */}
+            <div style={{ borderTop: "1px solid var(--border)" }}>
+              <Comments postId={post._id} />
             </div>
 
           </div>

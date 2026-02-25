@@ -7,8 +7,9 @@ const authRoutes = require("./routes/authRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 const userRoutes = require("./routes/userRoutes");
 const followRoutes = require("./routes/followRoutes"); 
-const taskRoutes = require("./routes/taskRoutes");
 const postRoutes = require("./routes/postRoutes");
+const commentRoutes = require("./routes/commentRoutes");
+const taskRoutes = require("./routes/taskRoutes");
 const protect = require("./middleware/authMiddleware");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 
@@ -65,8 +66,9 @@ app.get("/api/protected", protect, (req, res) => {
 app.use("/api/auth", authLimiter, authRoutes);
 app.use("/api/users", userRoutes); 
 app.use("/api/follow", followRoutes);
-app.use("/api/tasks", taskRoutes);
-app.use("/api/posts", postRoutes);  
+app.use("/api/posts", postRoutes); 
+app.use("/api/comments", commentRoutes); 
+app.use("/api/tasks", taskRoutes); 
 app.use("/api/categories", categoryRoutes);
 
 app.get("/", (req, res) => {

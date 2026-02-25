@@ -7,8 +7,8 @@ function generateOtp() {
 async function sendOtpEmail(to, otp, type) {
   const subject =
     type === "register"
-      ? "Task Pilot – Verify your email"
-      : "Task Pilot – Password reset code";
+      ? "SocioSpace – Verify your email"
+      : "SocioSpace – Password reset code";
 
   const heading =
     type === "register" ? "Verify your email address" : "Reset your password";
@@ -21,7 +21,7 @@ async function sendOtpEmail(to, otp, type) {
   const html = `
     <div style="font-family: 'Segoe UI', sans-serif; max-width: 480px; margin: 0 auto; background: #fdf7ef; border-radius: 16px; overflow: hidden; border: 1px solid #e8ddd0;">
       <div style="background: linear-gradient(135deg, #147d71, #0b5f56); padding: 32px 32px 24px; text-align: center;">
-        <p style="margin: 0; color: rgba(255,255,255,0.8); font-size: 13px; letter-spacing: 1px; text-transform: uppercase;">Task Pilot</p>
+        <p style="margin: 0; color: rgba(255,255,255,0.8); font-size: 13px; letter-spacing: 1px; text-transform: uppercase;">SocioSpace</p>
         <h1 style="margin: 8px 0 0; color: #fff; font-size: 22px; font-weight: 700;">${heading}</h1>
       </div>
       <div style="padding: 32px;">

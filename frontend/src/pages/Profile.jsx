@@ -121,7 +121,7 @@ function Profile() {
       <div className="ambient ambient-two" />
 
       <main className="auth-card" style={{ maxWidth: "520px" }}>
-        <p className="auth-eyebrow">Task Pilot</p>
+        <p className="auth-eyebrow">SocioSpace</p>
 
         {successMessage ? <p className="notice success">{successMessage}</p> : null}
         {errorMessage ? <p className="notice error">{errorMessage}</p> : null}
@@ -226,9 +226,9 @@ function Profile() {
           </form>
         )}
 
-        {/* <p className="auth-switch" style={{ textAlign: "center", marginTop: "16px" }}>
-          <a href="/dashboard">← Back to Dashboard</a>
-        </p> */}
+        <p className="auth-switch" style={{ textAlign: "center", marginTop: "16px" }}>
+          <a href="/feed">← Back to Feed</a>
+        </p>
       </main>
     </div>
     </>

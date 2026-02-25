@@ -51,7 +51,7 @@ function App() {
           }
         />
         <Route
-          path="/dashboard"
+          path="/drafts"
           element={
             <ProtectedRoute>
               <Dashboard />

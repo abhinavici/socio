@@ -1,6 +1,6 @@
-# Task Pilot Frontend
+# SocioSpace Frontend
 
-React + Vite client for the Task Pilot task manager.
+React + Vite client for the SocioSpace task manager.
 
 ## Features
 

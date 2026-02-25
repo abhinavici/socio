@@ -109,6 +109,6 @@ export const isTokenExpired = (token) => {
 export const isTokenValid = (token) => Boolean(token) && !isTokenExpired(token);
 
 export function removeToken() {
-  localStorage.removeItem("token");
+  clearToken();
 }
 

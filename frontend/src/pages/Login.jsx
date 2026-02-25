@@ -15,7 +15,7 @@ function Login() {
   useEffect(() => {
     const existingToken = getToken();
     if (isTokenValid(existingToken)) {
-      navigate("/dashboard", { replace: true });
+      navigate("/feed", { replace: true });
     }
   }, [navigate]);
 
@@ -37,7 +37,7 @@ function Login() {
       });
 
       setToken(data.token);
-      navigate("/dashboard", { replace: true });
+      navigate("/feed", { replace: true });
     } catch (error) {
       setErrorMessage(getErrorMessage(error, "Login failed. Check your credentials."));
     } finally {
@@ -51,10 +51,10 @@ function Login() {
       <div className="ambient ambient-two" />
 
       <main className="auth-card">
-        <p className="auth-eyebrow">Task Pilot</p>
+        <p className="auth-eyebrow">SocioSpace</p>
         <h1 className="auth-title">Welcome back</h1>
         <p className="auth-subtitle">
-          Focus your day with one clean board for priorities, progress, and done tasks.
+         Bringing the world a little closer, one post at a time.
         </p>
 
         {location.state?.message ? <p className="notice success">{location.state.message}</p> : null}

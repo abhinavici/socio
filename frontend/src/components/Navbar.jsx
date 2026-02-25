@@ -12,11 +12,11 @@ function Navbar() {
 
   return (
     <nav className="navbar">
-      <Link to="/dashboard" className="navbar-brand">Task Pilot</Link>
+      <Link to="/feed" className="navbar-brand">SocioSpace</Link>
 
       <div className="navbar-links">
         <Link to="/feed">Feed</Link>
-        <Link to="/dashboard">Dashboard</Link>
+        <Link to="/drafts">Drafts</Link>
         <Link to="/profile">Profile</Link>
       </div>
       <SearchBar />

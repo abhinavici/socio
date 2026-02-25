@@ -134,7 +134,7 @@ function ForgotPassword() {
       <div className="ambient ambient-two" />
 
       <main className="auth-card">
-        <p className="auth-eyebrow">Task Pilot</p>
+        <p className="auth-eyebrow">SocioSpace</p>
         <h1 className="auth-title">{stepTitles[step]}</h1>
         <p className="auth-subtitle">{stepSubtitles[step]}</p>
 

@@ -100,13 +100,13 @@ function Register() {
       <div className="ambient ambient-two" />
 
       <main className="auth-card">
-        <p className="auth-eyebrow">Task Pilot</p>
+        <p className="auth-eyebrow">SocioSpace</p>
         <h1 className="auth-title">
           {step === STEPS.FORM ? "Create your account" : "Verify your email"}
         </h1>
         <p className="auth-subtitle">
           {step === STEPS.FORM
-            ? "Track work, personal items, and deadlines with a board designed for quick momentum."
+            ? "Your space. Your voice. Your community. Welcome to the center of the conversation."
             : `We sent a 6-digit code to ${email}. Enter it below to confirm your account.`}
         </p>
 

@@ -369,8 +369,8 @@ function Dashboard() {
       <div className={`dashboard-shell ${isCreateModalOpen ? "is-blurred" : ""}`}>
         <header className="panel dashboard-header">
           <div>
-            <p className="dashboard-eyebrow">Task Pilot</p>
-            <h1 className="dashboard-title">My Tasks</h1>
+            <p className="dashboard-eyebrow">SocioSpace</p>
+            <h1 className="dashboard-title">Your Drafts</h1>
           </div>
 
           <div className="dashboard-stats">
@@ -391,9 +391,6 @@ function Dashboard() {
                 +
               </span>
               Create
-            </button>
-            <button className="btn btn-outline" onClick={handleLogout} type="button">
-              Logout
             </button>
           </div>
         </header>
