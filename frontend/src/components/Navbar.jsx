@@ -1,6 +1,7 @@
 import SearchBar from "./SearchBar";
 import { Link, useNavigate } from "react-router-dom";
 import { removeToken } from "../utils/auth";
+import NotificationBell from "./NotificationBell";
 
 function Navbar() {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ function Navbar() {
         <Link to="/feed">Feed</Link>
         <Link to="/drafts">Drafts</Link>
         <Link to="/profile">Profile</Link>
+        <NotificationBell />
       </div>
       <SearchBar />
 

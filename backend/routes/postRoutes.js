@@ -19,4 +19,13 @@ router.delete("/:postId", protect, deletePost);
 router.post("/:postId/like", protect, likePost);
 router.delete("/:postId/like", protect, unlikePost);
 
+// app.post('/api/posts', async (req, res, next) => {
+//   try {
+//     const post = await Post.create(req.body);
+//     res.status(201).json(post);
+//   } catch (err) {
+//     next(err); // Pass error to global handler
+//   }
+// });
+
 module.exports = router;

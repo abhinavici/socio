@@ -7,7 +7,7 @@ import Navbar from "../components/Navbar";
 function UserProfile() {
   const { username } = useParams();
   const [user, setUser] = useState(null);
-  const [isFollowing, setIsFollowing] = useState(false);
+const [followState, setFollowState] = useState("none"); 
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -23,7 +23,10 @@ function UserProfile() {
 
         // Check if I am already following this user
         const { data: statusData } = await API.get(`/follow/${profileData._id}/status`);
-        setIsFollowing(statusData.isFollowing);
+        if (statusData.isFollowing) setFollowState("following");
+        else if (statusData.isPending) setFollowState("pending");
+        else setFollowState("none");
+
       } catch (error) {
         setErrorMessage(getErrorMessage(error, "User not found."));
       } finally {
@@ -34,24 +37,33 @@ function UserProfile() {
     fetchProfile();
   }, [username]);
 
-  const handleFollow = async () => {
-    try {
-      setIsSubmitting(true);
-      if (isFollowing) {
-        await API.delete(`/follow/${user._id}`);
-        setIsFollowing(false);
-        setUser((prev) => ({ ...prev, followersCount: prev.followersCount - 1 }));
+const handleFollow = async () => {
+  try {
+    setIsSubmitting(true);
+    if (followState === "following") {
+      await API.delete(`/follow/${user._id}`);
+      setFollowState("none");
+      setUser((prev) => ({ ...prev, followersCount: prev.followersCount - 1 }));
+    } else if (followState === "pending") {
+      // Cancel the follow request
+      await API.delete(`/follow/${user._id}`);
+      setFollowState("none");
+    } else {
+      const { data } = await API.post(`/follow/${user._id}`);
+      if (data.status === "pending") {
+        setFollowState("pending");
+        // Don't increment count yet — not accepted
       } else {
-        await API.post(`/follow/${user._id}`);
-        setIsFollowing(true);
+        setFollowState("following");
         setUser((prev) => ({ ...prev, followersCount: prev.followersCount + 1 }));
       }
-    } catch (error) {
-      setErrorMessage(getErrorMessage(error, "Action failed. Please try again."));
-    } finally {
-      setIsSubmitting(false);
     }
-  };
+  } catch (error) {
+    setErrorMessage(getErrorMessage(error, "Action failed. Please try again."));
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   if (isLoading) {
     return (
@@ -130,18 +142,24 @@ function UserProfile() {
               onClick={handleFollow}
               disabled={isSubmitting}
               style={{
-                background: isFollowing ? "transparent" : "",
-                color: isFollowing ? "var(--sea)" : "",
-                border: isFollowing ? "1px solid var(--sea)" : "",
+                background: followState !== "none" ? "transparent" : "",
+                color: followState !== "none" ? "var(--sea)" : "",
+                border: followState !== "none" ? "1px solid var(--sea)" : "",
                 minWidth: "140px"
               }}
             >
-              {isSubmitting ? "..." : isFollowing ? "Unfollow" : "Follow"}
+              {isSubmitting 
+              ? "..." 
+              : followState === "following" 
+              ? "Unfollow" 
+              : followState === "pending" 
+              ? "Requested"
+              : "Follow"}
             </button>
           </div>
 
           {/* Private account message */}
-          {user.isPrivate && !isFollowing && (
+          {user.isPrivate && followState !== "following" && (
             <div style={{ textAlign: "center", padding: "20px", border: "1px dashed var(--border)", borderRadius: "var(--radius-md)", color: "var(--muted)" }}>
               🔒 This account is private. Follow to see their content.
             </div>

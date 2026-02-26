@@ -10,6 +10,7 @@ const followRoutes = require("./routes/followRoutes");
 const postRoutes = require("./routes/postRoutes");
 const commentRoutes = require("./routes/commentRoutes");
 const taskRoutes = require("./routes/taskRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
 const protect = require("./middleware/authMiddleware");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 
@@ -70,6 +71,8 @@ app.use("/api/posts", postRoutes);
 app.use("/api/comments", commentRoutes); 
 app.use("/api/tasks", taskRoutes); 
 app.use("/api/categories", categoryRoutes);
+app.use("/api/notifications", notificationRoutes);
+
 
 app.get("/", (req, res) => {
   res.send("API is running...");
@@ -77,5 +80,13 @@ app.get("/", (req, res) => {
 
 app.use(notFound);
 app.use(errorHandler);
+
+app.use((err, req, res, next) => {
+  console.error('Error message:', err.message);
+  console.error('Stack trace:', err.stack);
+  res.status(err.status || 500).json({
+    error: err.message || 'Internal Server Error',
+  });
+});
 
 module.exports = app;
