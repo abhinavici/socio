@@ -15,6 +15,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { AUTH_LOGOUT_EVENT } from "./services/api";
 import UserProfile from "./pages/UserProfile";
 import Feed from "./pages/Feed";
+import Messages from "./pages/Messages";
+import ChatWindow from "./pages/ChatWindow";
 
 function AuthRedirectBridge() {
   const navigate = useNavigate();
@@ -74,6 +76,10 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
+
+        <Route path="/messages/:conversationId" element={<ProtectedRoute><ChatWindow /></ProtectedRoute>} />
+        
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </Router>

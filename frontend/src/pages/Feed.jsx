@@ -14,7 +14,6 @@ function Feed() {
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Load feed on mount
   useEffect(() => {
     const fetchFeed = async () => {
       try {
@@ -30,7 +29,6 @@ function Feed() {
     fetchFeed();
   }, []);
 
-  // Handle image selection
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -38,27 +36,21 @@ function Feed() {
     setImagePreview(URL.createObjectURL(file));
   };
 
-  // Create post
   const handleCreatePost = async (e) => {
     e.preventDefault();
     if (!caption.trim() && !imageFile) {
       setErrorMessage("Post must have a caption or an image.");
       return;
     }
-
     try {
       setIsSubmitting(true);
       setErrorMessage("");
-
       const formData = new FormData();
       if (caption.trim()) formData.append("caption", caption.trim());
       if (imageFile) formData.append("image", imageFile);
-
       const { data } = await API.post("/posts", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-
-      // Add new post to top of feed
       setPosts((prev) => [{ ...data, isLiked: false }, ...prev]);
       setCaption("");
       setImageFile(null);
@@ -70,25 +62,20 @@ function Feed() {
     }
   };
 
-  // Like / Unlike
   const handleLike = async (post) => {
     try {
       if (post.isLiked) {
         await API.delete(`/posts/${post._id}/like`);
         setPosts((prev) =>
           prev.map((p) =>
-            p._id === post._id
-              ? { ...p, isLiked: false, likesCount: p.likesCount - 1 }
-              : p
+            p._id === post._id ? { ...p, isLiked: false, likesCount: p.likesCount - 1 } : p
           )
         );
       } else {
         await API.post(`/posts/${post._id}/like`);
         setPosts((prev) =>
           prev.map((p) =>
-            p._id === post._id
-              ? { ...p, isLiked: true, likesCount: p.likesCount + 1 }
-              : p
+            p._id === post._id ? { ...p, isLiked: true, likesCount: p.likesCount + 1 } : p
           )
         );
       }
@@ -97,7 +84,6 @@ function Feed() {
     }
   };
 
-  // Delete post
   const handleDelete = async (postId) => {
     if (!window.confirm("Delete this post?")) return;
     try {
@@ -111,116 +97,90 @@ function Feed() {
   return (
     <>
       <Navbar />
-      <div style={{ maxWidth: "600px", margin: "32px auto", padding: "0 16px" }}>
+      <div className="feed-layout">
 
         {errorMessage && <p className="notice error">{errorMessage}</p>}
 
-        {/* Create Post Box */}
-        <form onSubmit={handleCreatePost} style={{ background: "var(--panel)", border: "1px solid var(--border)", borderRadius: "var(--radius-lg)", padding: "20px", marginBottom: "24px", boxShadow: "var(--shadow)" }}>
+        {/* Create Post */}
+        <form onSubmit={handleCreatePost} className="post-composer">
           <textarea
+            className="post-composer__textarea"
             placeholder="What's on your mind?"
             value={caption}
             onChange={(e) => setCaption(e.target.value)}
             maxLength={500}
             rows={3}
-            style={{ width: "100%", border: "none", background: "transparent", resize: "none", fontSize: "15px", fontFamily: "inherit", color: "var(--ink)", outline: "none" }}
           />
-          <p style={{ fontSize: "12px", color: "var(--muted)", textAlign: "right", margin: "4px 0 12px" }}>
-            {caption.length}/500
-          </p>
+          <p className="post-composer__char-count">{caption.length}/500</p>
 
-          {/* Image Preview */}
           {imagePreview && (
-            <div style={{ position: "relative", marginBottom: "12px" }}>
-              <img src={imagePreview} alt="preview" style={{ width: "100%", borderRadius: "var(--radius-md)", maxHeight: "300px", objectFit: "cover" }} />
-              <button type="button" onClick={() => { setImageFile(null); setImagePreview(""); }}
-                style={{ position: "absolute", top: "8px", right: "8px", background: "rgba(0,0,0,0.6)", color: "#fff", border: "none", borderRadius: "50%", width: "28px", height: "28px", cursor: "pointer", fontSize: "16px" }}>
-                ×
-              </button>
+            <div className="post-composer__image-preview">
+              <img src={imagePreview} alt="preview" />
+              <button
+                type="button"
+                className="post-composer__remove-image"
+                onClick={() => { setImageFile(null); setImagePreview(""); }}
+              >×</button>
             </div>
           )}
 
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <label style={{ cursor: "pointer", color: "var(--sea)", fontSize: "14px", fontWeight: 500 }}>
+          <div className="post-composer__divider" />
+          <div className="post-composer__actions">
+            <label className="photo-upload-label">
               📷 Add Photo
               <input type="file" accept="image/*" onChange={handleImageChange} style={{ display: "none" }} />
             </label>
-            <button className="btn btn-primary" type="submit" disabled={isSubmitting} style={{ padding: "8px 24px" }}>
+            <button className="btn btn-primary" type="submit" disabled={isSubmitting}>
               {isSubmitting ? "Posting..." : "Post"}
             </button>
           </div>
         </form>
 
         {/* Feed */}
-        {isLoading && <p style={{ textAlign: "center", color: "var(--muted)" }}>Loading feed...</p>}
+        {isLoading && <div className="feed-loading"><p>Loading feed...</p></div>}
 
         {!isLoading && posts.length === 0 && (
-          <div style={{ textAlign: "center", padding: "40px", color: "var(--muted)", background: "var(--panel)", borderRadius: "var(--radius-lg)", border: "1px dashed var(--border)" }}>
-            <p style={{ fontSize: "20px" }}>🌱</p>
+          <div className="feed-empty">
+            <p className="feed-empty__emoji">🌱</p>
             <p>Your feed is empty. Follow people to see their posts!</p>
           </div>
         )}
 
         {posts.map((post) => (
-          <div key={post._id} style={{ background: "var(--panel)", border: "1px solid var(--border)", borderRadius: "var(--radius-lg)", marginBottom: "20px", boxShadow: "var(--shadow)", overflow: "hidden" }}>
-
-            {/* Post Header */}
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 16px" }}>
-              <Link to={`/user/${post.author.username}`} style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
-                <div style={{ width: 40, height: 40, borderRadius: "50%", background: "var(--mint)", overflow: "hidden", border: "2px solid var(--sea)" }}>
+          <article key={post._id} className="post-card">
+            <div className="post-card__header">
+              <Link to={`/user/${post.author.username}`} className="post-author-link">
+                <div className="avatar avatar--md">
                   {post.author.avatar
-                    ? <img src={post.author.avatar} alt={post.author.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                    : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, color: "var(--sea)", fontWeight: 700 }}>
-                        {post.author.name?.charAt(0).toUpperCase()}
-                      </div>
+                    ? <img src={post.author.avatar} alt={post.author.name} />
+                    : <span className="avatar--initial">{post.author.name?.charAt(0).toUpperCase()}</span>
                   }
                 </div>
                 <div>
-                  <p style={{ margin: 0, fontWeight: 600, color: "var(--ink)", fontSize: "15px" }}>{post.author.name}</p>
-                  <p style={{ margin: 0, fontSize: "12px", color: "var(--muted)" }}>@{post.author.username}</p>
+                  <p className="user-info__name">{post.author.name}</p>
+                  <p className="user-info__handle">@{post.author.username}</p>
                 </div>
               </Link>
-
-              {/* Delete button — only for your own posts */}
-              <button onClick={() => handleDelete(post._id)}
-                style={{ background: "none", border: "none", color: "var(--muted)", cursor: "pointer", fontSize: "18px", padding: "4px 8px" }}
-                title="Delete post">
+              <button className="delete-post-btn" onClick={() => handleDelete(post._id)} title="Delete post">
                 🗑
               </button>
             </div>
 
-            {/* Post Image */}
-            {post.image && (
-              <img src={post.image} alt="post" style={{ width: "100%", maxHeight: "400px", objectFit: "cover" }} />
-            )}
+            {post.image && <img src={post.image} alt="post" className="post-card__image" />}
+            {post.caption && <p className="post-card__caption">{post.caption}</p>}
 
-            {/* Caption */}
-            {post.caption && (
-              <p style={{ margin: "0", padding: "12px 16px", fontSize: "15px", color: "var(--ink)" }}>
-                {post.caption}
-              </p>
-            )}
-
-            {/* Like Button */}
-            <div style={{ padding: "10px 16px", borderTop: "1px solid var(--border)", display: "flex", alignItems: "center", gap: "8px" }}>
-              <button onClick={() => handleLike(post)}
-                style={{ background: "none", border: "none", cursor: "pointer", fontSize: "22px", padding: 0 }}>
+            <div className="post-card__actions">
+              <button className="like-btn" onClick={() => handleLike(post)}>
                 {post.isLiked ? "❤️" : "🤍"}
               </button>
-              <span style={{ fontSize: "14px", color: "var(--muted)" }}>
-                {post.likesCount} {post.likesCount === 1 ? "like" : "likes"}
-              </span>
-              <span style={{ fontSize: "12px", color: "var(--muted)", marginLeft: "auto" }}>
-                {new Date(post.createdAt).toLocaleDateString()}
-              </span>
+              <span className="likes-count">{post.likesCount} {post.likesCount === 1 ? "like" : "likes"}</span>
+              <span className="post-date">{new Date(post.createdAt).toLocaleDateString()}</span>
             </div>
 
-            {/* Comments */}
-            <div style={{ borderTop: "1px solid var(--border)" }}>
+            <div className="post-card__comments">
               <Comments postId={post._id} />
             </div>
-
-          </div>
+          </article>
         ))}
       </div>
     </>

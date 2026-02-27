@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import API from "../services/api";
+import { useSocketContext } from "../context/SocketContext";
 
-export default function NotificationBell() {
+export default function NotificationBell({ mobileNav = false }) {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  // Poll for unread count every 30 seconds
   useEffect(() => {
     const fetchCount = async () => {
       try {
@@ -20,7 +20,14 @@ export default function NotificationBell() {
     return () => clearInterval(interval);
   }, []);
 
-  // Close dropdown on outside click
+  const { socket } = useSocketContext();
+  useEffect(() => {
+    if (!socket) return;
+    socket.on("newNotification", () => setUnreadCount((prev) => prev + 1));
+    return () => socket.off("newNotification");
+  }, [socket]);
+
+  // Close on outside click
   useEffect(() => {
     const handler = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -32,11 +39,11 @@ export default function NotificationBell() {
   }, []);
 
   const openDropdown = async () => {
-    setOpen((prev) => !prev);
-    if (!open) {
+    const next = !open;
+    setOpen(next);
+    if (next) {
       const { data } = await API.get("/notifications");
       setNotifications(data);
-      // Mark all as read
       await API.patch("/notifications/read-all");
       setUnreadCount(0);
     }
@@ -64,66 +71,61 @@ export default function NotificationBell() {
   };
 
   return (
-    <div style={{ position: "relative" }} ref={dropdownRef}>
-      <button onClick={openDropdown} style={{ position: "relative", background: "none", border: "none", cursor: "pointer", fontSize: "1.4rem" }}>
-        🔔
-        {unreadCount > 0 && (
-          <span style={{
-            position: "absolute", top: "-6px", right: "-6px",
-            background: "red", color: "white", borderRadius: "50%",
-            fontSize: "0.65rem", padding: "2px 5px", fontWeight: "bold",
-          }}>
-            {unreadCount > 9 ? "9+" : unreadCount}
-          </span>
+    <div
+      className={mobileNav ? "mobile-nav__item mobile-nav__notif" : "notif-bell"}
+      ref={dropdownRef}
+    >
+      <button
+        onClick={openDropdown}
+        className={mobileNav ? "mobile-nav__notif-btn" : "notif-bell__btn"}
+      >
+        {mobileNav ? (
+          <>
+            <span className="material-icons-round">notifications</span>
+            <span className="mobile-nav__label">
+              Alerts{unreadCount > 0 ? ` (${unreadCount > 9 ? "9+" : unreadCount})` : ""}
+            </span>
+          </>
+        ) : (
+          <>
+            🔔
+            {unreadCount > 0 && (
+              <span className="notif-bell__badge">{unreadCount > 9 ? "9+" : unreadCount}</span>
+            )}
+          </>
         )}
       </button>
 
       {open && (
-        <div style={{
-          position: "absolute", right: 0, top: "110%",
-          background: "white", border: "1px solid #eee",
-          borderRadius: "10px", width: "320px", boxShadow: "0 4px 20px rgba(0,0,0,0.12)",
-          zIndex: 1000, maxHeight: "400px", overflowY: "auto",
-        }}>
-          <div style={{ padding: "12px 16px", fontWeight: "bold", borderBottom: "1px solid #f0f0f0" }}>
-            Notifications
-          </div>
+        <div className={mobileNav ? "notif-dropdown notif-dropdown--mobile" : "notif-dropdown"}>
+          <div className="notif-dropdown__header">Notifications</div>
 
           {notifications.length === 0 ? (
-            <div style={{ padding: "20px", textAlign: "center", color: "#888" }}>No notifications</div>
+            <div className="notif-dropdown__empty">No notifications</div>
           ) : (
             notifications.map((n) => (
-              <div key={n._id} style={{
-                padding: "12px 16px", borderBottom: "1px solid #f7f7f7",
-                background: n.isRead ? "white" : "#f0f7ff",
-                display: "flex", flexDirection: "column", gap: "8px",
-              }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <div
+                key={n._id}
+                className={`notif-item ${n.isRead ? "notif-item--read" : "notif-item--unread"}`}
+              >
+                <div className="notif-item__content">
                   <img
                     src={n.sender?.avatar || "/default-avatar.png"}
                     alt="avatar"
-                    style={{ width: "36px", height: "36px", borderRadius: "50%", objectFit: "cover" }}
+                    className="notif-item__avatar"
                   />
                   <div>
-                    <p style={{ margin: 0, fontSize: "0.9rem" }}>{getMessage(n)}</p>
-                    <p style={{ margin: 0, fontSize: "0.75rem", color: "#999" }}>
-                      {new Date(n.createdAt).toLocaleString()}
-                    </p>
+                    <p className="notif-item__message">{getMessage(n)}</p>
+                    <p className="notif-item__time">{new Date(n.createdAt).toLocaleString()}</p>
                   </div>
                 </div>
 
                 {n.type === "follow_request" && (
-                  <div style={{ display: "flex", gap: "8px", paddingLeft: "46px" }}>
-                    <button
-                      onClick={() => handleAccept(n.sender._id, n._id)}
-                      style={{ padding: "4px 14px", background: "#3b82f6", color: "white", border: "none", borderRadius: "6px", cursor: "pointer" }}
-                    >
+                  <div className="notif-item__actions">
+                    <button className="notif-accept-btn" onClick={() => handleAccept(n.sender._id, n._id)}>
                       Accept
                     </button>
-                    <button
-                      onClick={() => handleReject(n.sender._id, n._id)}
-                      style={{ padding: "4px 14px", background: "#f1f1f1", border: "none", borderRadius: "6px", cursor: "pointer" }}
-                    >
+                    <button className="notif-decline-btn" onClick={() => handleReject(n.sender._id, n._id)}>
                       Decline
                     </button>
                   </div>
