@@ -36,6 +36,10 @@ function Messages() {
 
         <main className="auth-card auth-card--wide auth-card--padless">
           <div className="messages-header">
+            {/* Back to Feed button */}
+            <button className="messages-back-btn" onClick={() => navigate("/feed")}>
+              <span className="material-icons-round">arrow_back</span>
+            </button>
             <h2>Messages</h2>
           </div>
 

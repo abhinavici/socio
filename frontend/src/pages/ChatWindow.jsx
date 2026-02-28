@@ -202,7 +202,6 @@ function ChatWindow() {
       <div
         className="chat-page"
         onClick={() => activeMenu && setActiveMenu(null)}
-        style={{position: "fixed", top: "var(--navbar-h, 60px)", left: 0, right: 0, bottom: 0 }}
       >
         <div className="chat-card">
 

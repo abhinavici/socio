@@ -711,6 +711,97 @@ p { margin: 0; }
   width: 300px;
 }
 
+/* ── Messages back button ───────────────────────────────────── */
+.messages-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.messages-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-family: var(--font-display);
+}
+.messages-back-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  transition: background 150ms ease, color 150ms ease;
+  line-height: 1;
+}
+.messages-back-btn:hover {
+  background: var(--paper-alt);
+  color: var(--ink);
+}
+.messages-back-btn .material-icons-round { font-size: 1.2rem; }
+
+/* ── Profile logout button (top-right of card) ───────────────── */
+.profile-logout-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+  line-height: 1;
+}
+.profile-logout-btn:hover {
+  background: var(--danger-light);
+  color: var(--danger);
+  border-color: var(--danger);
+}
+.profile-logout-btn .material-icons-round { font-size: 1.1rem; }
+
+/* ── Mobile navbar search icon ───────────────────────────────── */
+.navbar-mobile-search {
+  display: none; /* hidden on desktop */
+}
+.navbar-search-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  transition: color 150ms ease;
+  line-height: 1;
+}
+.navbar-search-btn:hover { color: var(--sea); }
+.navbar-search-btn .material-icons-round { font-size: 1.3rem; }
+
+/* Mobile search overlay */
+.mobile-search-overlay {
+  display: none;
+  position: fixed;
+  top: 50px; /* mobile navbar height */
+  left: 0;
+  right: 0;
+  z-index: 300;
+  background: var(--panel);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+}
+.mobile-search-overlay.is-open {
+  display: block;
+}
+
 /* ── Responsive ─────────────────────────────────────────────── */
 @media (max-width: 920px) {
   .dashboard-grid { grid-template-columns: 1fr; }
@@ -718,16 +809,29 @@ p { margin: 0; }
   .dashboard-stats { justify-content: flex-start; }
 }
 @media (max-width: 640px) {
-  /* Slim down top navbar — just brand */
+  /* Slim down top navbar — brand left, search icon right */
   .navbar {
     padding: 0 16px;
     height: 50px;
     justify-content: space-between;
   }
   .navbar-links,
-  .searchbar,
   .navbar-logout {
     display: none;
+  }
+  /* Hide the full searchbar, show icon trigger instead */
+  .searchbar { display: none; }
+  .navbar-mobile-search {
+    display: flex;
+    align-items: center;
+  }
+  /* Mobile search overlay full width */
+  .mobile-search-overlay .searchbar {
+    display: flex;
+    width: 100%;
+  }
+  .mobile-search-overlay .searchbar__input {
+    width: 100%;
   }
 
   /* Show the bottom tab bar */
@@ -769,14 +873,12 @@ p { margin: 0; }
     padding-bottom: 16px;
   }
 
-  /* Override CSS var so inline style picks up mobile navbar height */
-  :root { --navbar-h: 50px; }
-
-  /* Chat on mobile: bottom offset for the fixed bottom nav */
+  /* Chat on mobile: top = 50px navbar, bottom = 58px bottom nav
+     !important needed because desktop .chat-page is defined later in file */
   .chat-page {
-    bottom: 58px;
-    padding: 0;
-    overflow: hidden;
+    top: 50px !important;
+    bottom: 58px !important;
+    padding: 0 !important;
   }
   .chat-card {
     border-radius: 0;
@@ -813,12 +915,16 @@ p { margin: 0; }
 /* ── Chat Window ─────────────────────────────────────────────── */
 
 .chat-page {
-  /* position:fixed applied inline in ChatWindow.jsx */
+  position: fixed;
+  top: 60px;          /* desktop navbar height */
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: flex;
-  align-items: stretch;        /* let card stretch to fill height */
+  align-items: stretch;
   justify-content: center;
   padding: 20px 16px;
-  box-sizing: border-box;      /* padding is inside, not added on top */
+  box-sizing: border-box;
   background-color: var(--paper);
   background-image:
     radial-gradient(ellipse 80% 60% at 10% 5%, rgba(232, 132, 58, 0.08) 0%, transparent 55%),
@@ -889,6 +995,9 @@ p { margin: 0; }
 }
 .chat-msg-row--me   { justify-content: flex-end; }
 .chat-msg-row--them { justify-content: flex-start; }
+/* Wrapper div inside each row (for context menu) must also be full width */
+.chat-msg-row--me  > div { display: flex; justify-content: flex-end;  width: 100%; }
+.chat-msg-row--them > div { display: flex; justify-content: flex-start; width: 100%; }
 
 /* ── Bubble ──
    The bubble is a block element capped at 70% width.
@@ -1046,6 +1155,7 @@ p { margin: 0; }
 }
 
 @media (max-width: 560px) {
+  /* chat-page and chat-card are already handled in the 640px block — don't override */
   .chat-page { padding: 0; }
-  .chat-card { border-radius: 0; border: none; height: calc(100vh - 60px); }
+  .chat-card { border-radius: 0; border: none; height: 100%; }
 }

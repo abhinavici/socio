@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { removeToken } from "../utils/auth";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 import { getErrorMessage } from "../utils/http";
@@ -14,6 +15,11 @@ function Profile() {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
+
+  const handleLogout = () => {
+    removeToken();
+    navigate("/login", { replace: true });
+  };
 
   useEffect(() => {
     const fetchMe = async () => {
@@ -98,7 +104,12 @@ function Profile() {
         <div className="ambient ambient-one" />
         <div className="ambient ambient-two" />
 
-        <main className="auth-card auth-card--wide">
+        <main className="auth-card auth-card--wide" style={{ position: "relative" }}>
+          {/* Logout button — top right of profile card */}
+          <button className="profile-logout-btn" onClick={handleLogout} title="Logout">
+            <span className="material-icons-round">logout</span>
+          </button>
+
           <p className="auth-eyebrow">SocioSpace</p>
 
           {successMessage && <p className="notice success">{successMessage}</p>}
