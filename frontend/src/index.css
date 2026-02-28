@@ -861,11 +861,16 @@ p { margin: 0; }
   .auth-page {
     min-height: calc(100vh - 50px - 58px);
     overflow: visible;
+    width:100%;
+    padding: 12px;
+    box-sizing: border-box;
   }
 
   /* auth-card: less top margin on mobile so it doesn't crowd */
   .auth-card {
     margin: 1rem auto;
+    width: 100%;
+    max-width: 100%;
   }
 
   /* Feed needs space below for bottom nav */
@@ -896,6 +901,9 @@ p { margin: 0; }
     align-items: center;
     justify-content: center;
     height: auto;
+  }
+  .ambient {
+  display: none;
   }
 }
 @media (max-width: 560px) {
