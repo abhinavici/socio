@@ -15,7 +15,7 @@ const MARQUEE_ITEMS = [
 ];
 
 const STATS = [
-  { value: 100, suffix: "%", label: "Free to use" },
+  { value: 100, suffix: "%", label: "Start Exploring" },
   { value: 4, suffix: " features", label: "Core experiences" },
   { value: 60, suffix: "fps", label: "Smooth & fast" },
   { value: 1, suffix: " space", label: "For everything social" },
@@ -374,7 +374,7 @@ export default function Landing() {
 
           <div className="lp-hero-ctas" style={{ "--d": "0.52s" }}>
             <MagButton className="lp-btn-primary" onClick={() => navigate("/register")}>
-              Start for free
+              Start Exploring
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
               </svg>
@@ -452,22 +452,24 @@ export default function Landing() {
         <div className="lp-sticky-inner">
           <div className="lp-sticky-text">
             <div className="lp-eyebrow">Everything in one place</div>
-            {PHONE_SCENES.map((s, i) => (
-              <div key={i} className={`lp-scene${i === sceneIdx ? " lp-scene--on" : ""}`}>
-                <h2 className="lp-h2">{s.label}</h2>
-                <p className="lp-scene-p">
-                  {[
-                    "A clean, beautiful feed showing posts from people you follow. Scroll, like, and discover — completely distraction-free.",
-                    "Real-time messaging powered by WebSockets. Conversations that feel alive — messages appear instantly, no refresh needed.",
-                    "Your corner of SocioSpace. Showcase your posts, followers, and bio. Make it yours, make it memorable.",
-                    "Never miss a beat. Instant notifications for likes, comments, and follows — all in one elegant notification centre.",
-                  ][i]}
-                </p>
-                <div className="lp-scene-tag" style={{ background: s.accent + "20", color: s.accent }}>
-                  {["Explore Feed →","Start Chatting →","Build Profile →","Stay Updated →"][i]}
+            <div className="lp-scenes-wrap">
+              {PHONE_SCENES.map((s, i) => (
+                <div key={i} className={`lp-scene${i === sceneIdx ? " lp-scene--on" : ""}`}>
+                  <h2 className="lp-h2">{s.label}</h2>
+                  <p className="lp-scene-p">
+                    {[
+                      "A clean, beautiful feed showing posts from people you follow. Scroll, like, and discover peoples.",
+                      "Real-time messaging powered by WebSockets. Conversations that feel alive — messages appear instantly, no refresh needed.",
+                      "Your corner of SocioSpace. Showcase your posts, followers, and bio. Make it yours, make it memorable.",
+                      "Never miss a beat. Instant notifications for likes, comments, and follows — all in one elegant notification centre.",
+                    ][i]}
+                  </p>
+                  <div className="lp-scene-tag" style={{ background: s.accent + "20", color: s.accent }}>
+                    {["Explore Feed →","Start Chatting →","Build Profile →","Stay Updated →"][i]}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
             <div className="lp-dots">
               {PHONE_SCENES.map((s, i) => (
                 <div key={i} className={`lp-dot${i === sceneIdx ? " lp-dot--on" : ""}`}
@@ -548,7 +550,7 @@ export default function Landing() {
           <h2 className="lp-h2" data-reveal style={{ textAlign: "center", margin: "0 auto 48px" }}>Up and running in moments</h2>
           <div className="lp-how-steps">
             {[
-              { n: "01", title: "Create your account", desc: "Sign up free — no credit card, no catch. Just your name and you're in.", color: "#1a7a6e" },
+              { n: "01", title: "Create your account", desc: "Your first step to joining the community.", color: "#1a7a6e" },
               { n: "02", title: "Build your feed", desc: "Search for people, follow friends, explore posts. Your feed shapes itself around you.", color: "#e8843a" },
               { n: "03", title: "Share & connect", desc: "Post moments, send messages, like and comment. SocioSpace is yours from day one.", color: "#7c5cbf" },
             ].map((step, i) => (
@@ -840,12 +842,13 @@ export default function Landing() {
           font-size: 11px; font-weight: 700; letter-spacing: .1em;
           text-transform: uppercase; color: var(--sea); margin-bottom: 16px;
         }
-        .lp-sticky-text { flex: 1; max-width: 460px; position: relative; min-height: 220px; }
+        .lp-sticky-text { flex: 1; max-width: 460px; display: flex; flex-direction: column; }
+        .lp-scenes-wrap { position: relative; height: 240px; margin-bottom: 28px; }
         .lp-scene {
-          position: absolute; top: 40px; left: 0; opacity: 0; transform: translateY(18px);
-          transition: opacity .5s ease, transform .5s ease; pointer-events: none; max-width: 420px;
+          position: absolute; top: 0; left: 0; right: 0; opacity: 0; transform: translateY(18px);
+          transition: opacity .5s ease, transform .5s ease; pointer-events: none;
         }
-        .lp-scene--on { opacity: 1; transform: none; position: relative; top: 0; pointer-events: auto; }
+        .lp-scene--on { opacity: 1; transform: none; pointer-events: auto; }
         .lp-scene-p { font-size: 1rem; color: var(--muted); line-height: 1.7; margin-bottom: 20px; }
         .lp-scene-tag {
           display: inline-block; font-size: 13px; font-weight: 600;
