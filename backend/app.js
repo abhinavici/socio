@@ -16,7 +16,7 @@ const protect = require("./middleware/authMiddleware");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 
 const app = express();
-const DEFAULT_ALLOWED_ORIGINS = ["http://localhost:5173", "http://127.0.0.1:5173"];
+const DEFAULT_ALLOWED_ORIGINS = ["http://localhost:5173", "http://127.0.0.1:5173", "http://192.168.0.101:5173"];
 
 const toPositiveInteger = (value, fallbackValue) => {
   const parsed = Number.parseInt(value, 10);

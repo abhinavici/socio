@@ -57,13 +57,15 @@ io.on("connection", (socket) => {
   // data = { conversationId, text, receiverId }
   socket.on("sendMessage", async (data) => {
     try {
-      const { conversationId, text, receiverId, senderId } = data;
+      const { conversationId, text, receiverId, senderId, messageType, mediaUrl } = data;
 
       // 1. Save message to MongoDB
       const message = await Message.create({
         conversation: conversationId,
         sender: senderId,
-        text: text.trim(),
+        text: text?.trim() || "", // Handle empty or whitespace-only messages
+        messageType: messageType || "text",
+        mediaUrl: mediaUrl || "",
       });
 
       // 2. Populate sender info so frontend can display name/avatar

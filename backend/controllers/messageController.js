@@ -147,3 +147,19 @@ exports.deleteForEveryone = asyncHandler(async (req, res, next) => {
 
   res.json({ deleted: true, messageId });
 });
+/**
+ * POST /api/messages/upload-image
+ * Upload image to Cloudinary and return URL
+ * Frontend calls this first, then sends the URL via Socket.io
+ */
+exports.uploadMessageImage = asyncHandler(async (req, res, next) => {
+  if (!req.file) {
+    return next(httpError(400, "No image provided"));
+  }
+
+  // Cloudinary URL is attached by multer-storage-cloudinary middleware
+  res.json({
+    mediaUrl: req.file.path,
+    publicId: req.file.filename,
+  });
+});

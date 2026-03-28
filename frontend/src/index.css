@@ -1057,6 +1057,16 @@ p { margin: 0; }
   word-break: break-word;
   overflow-wrap: break-word;
 }
+.chat-bubble__image {
+  min-width: 150px;
+  min-height: 150px;
+  max-width: 220px;
+  max-height : 220px;
+  border-radius: 10px;
+  display: block;
+  cursor: pointer;
+  object-fit: cover;
+}
 
 /* Invisible spacer — same content as __meta, floated right, zero height.
    Forces the bubble to be at least as wide as text + timestamp combined. */
@@ -1141,6 +1151,63 @@ p { margin: 0; }
   font-size: 0.82rem;
   color: var(--muted);
   font-style: italic;
+}
+
+/* ── Image preview bar ── */
+.chat-image-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  border-top: 1px solid var(--border);
+  background: var(--mint);
+  flex-shrink: 0;
+}
+.chat-image-preview__thumb {
+  width: 60px;
+  height: 60px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.chat-image-preview__label {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+  flex: 1;
+}
+.chat-image-preview__cancel {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: var(--muted);
+  line-height: 1;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  transition: color 150ms ease, background 150ms ease;
+}
+.chat-image-preview__cancel:hover {
+  color: var(--danger);
+  background: var(--danger-light);
+}
+
+/* ── Image picker button ── */
+.chat-picker-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  padding: 0 12px;
+  font-size: 1.2rem;
+  color: var(--sea);
+  min-height: 40px;
+  flex-shrink: 0;
+  transition: background 150ms ease, border-color 150ms ease;
+}
+.chat-picker-btn:hover {
+  background: var(--mint);
+  border-color: var(--sea);
 }
 
 /* ── Input bar ── */
