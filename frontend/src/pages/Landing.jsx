@@ -832,7 +832,7 @@ export default function Landing() {
         @keyframes mq { from{transform:translateX(0)} to{transform:translateX(-50%)} }
 
         /* ── Sticky phone section ─────────────────────────── */
-        .lp-sticky-wrap { height: 400vh; position: relative; }
+        .lp-sticky-wrap { height: 300vh; position: relative; }
         .lp-sticky-inner {
           position: sticky; top: 0; height: 100vh;
           display: flex; align-items: center; justify-content: space-between;
@@ -843,7 +843,7 @@ export default function Landing() {
           text-transform: uppercase; color: var(--sea); margin-bottom: 16px;
         }
         .lp-sticky-text { flex: 1; max-width: 460px; display: flex; flex-direction: column; }
-        .lp-scenes-wrap { position: relative; height: 240px; margin-bottom: 28px; }
+        .lp-scenes-wrap { position: relative; min-height: 20px; margin-bottom: 20px; }
         .lp-scene {
           position: absolute; top: 0; left: 0; right: 0; opacity: 0; transform: translateY(18px);
           transition: opacity .5s ease, transform .5s ease; pointer-events: none;
@@ -911,13 +911,16 @@ export default function Landing() {
         .lp-stat-lbl { font-size: 12px; color: rgba(250,248,245,.4); letter-spacing: .04em; }
 
         /* ── Bento features ───────────────────────────────── */
-        .lp-bento-section { padding: 72px 7vw; background: var(--paper); }
+        .lp-bento-section { padding: 52px 7vw; background: var(--paper); }
         .lp-bento { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; max-width: 1100px; margin: 0 auto; }
         [data-reveal] {
           opacity: 0; transform: translateY(24px);
           transition: opacity .55s ease var(--di,0s), transform .55s ease var(--di,0s);
+          animation: revealFallback 0.6s ease forwards;
+            animation-delay: calc(var(--di,0s) + 1.2s);
         }
-        [data-reveal].revealed { opacity: 1; transform: none; }
+        [data-reveal].revealed { opacity: 1; transform: none; animation: none; }
+        @keyframes revealFallback { to { opacity: 1; transform: none; } }
         .lp-bento-card {
           background: var(--panel-raised); border: 1px solid var(--border);
           border-radius: var(--radius-lg); padding: 24px 22px;
@@ -948,7 +951,7 @@ export default function Landing() {
         }
 
         /* ── How it works ─────────────────────────────────── */
-        .lp-how { padding: 72px 7vw; background: var(--paper-alt); }
+        .lp-how { padding: 52px 7vw; background: var(--paper-alt); }
         .lp-how-inner { max-width: 1000px; margin: 0 auto; }
         .lp-how-steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 32px; position: relative; }
         .lp-how-step { position: relative; text-align: center; }
@@ -966,7 +969,7 @@ export default function Landing() {
         .lp-how-desc { font-size: .9rem; color: var(--muted); line-height: 1.65; }
 
         /* ── Activity section ─────────────────────────────── */
-        .lp-activity-section { padding: 72px 7vw; background: var(--ink); overflow: hidden; }
+        .lp-activity-section { padding: 52px 7vw; background: var(--ink); overflow: hidden; }
         .lp-activity-inner {
           max-width: 1100px; margin: 0 auto; display: grid;
           grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
@@ -1065,7 +1068,7 @@ export default function Landing() {
           .lp-cards { width: 100%; max-width: 320px; height: 340px; align-self: center; }
 
           /* Sticky phone section */
-          .lp-sticky-wrap { height: 400vh; }
+          .lp-sticky-wrap { height: 300vh; }
           .lp-sticky-inner { flex-direction: column-reverse; padding: 28px 5vw; gap: 20px; justify-content: center; }
           .lp-sticky-text { max-width: 100%; min-height: auto; }
           .lp-phone { width: 190px; height: 370px; border-radius: 36px; border-width: 6px; }

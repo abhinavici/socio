@@ -8,7 +8,7 @@ import Navbar from "../components/Navbar";
 function Profile() {
   const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [form, setForm] = useState({ name: "", username: "", bio: "", website: "", isPrivate: false });
+  const [form, setForm] = useState({ name: "", username: "", bio: "", website: ""});
   const [avatarPreview, setAvatarPreview] = useState("");
   const [avatarFile, setAvatarFile] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -26,7 +26,7 @@ function Profile() {
       try {
         const { data } = await API.get("/users/me");
         setUser(data);
-        setForm({ name: data.name, username: data.username, bio: data.bio || "", website: data.website || "", isPrivate: data.isPrivate || false });
+        setForm({ name: data.name, username: data.username, bio: data.bio || "", website: data.website || "" });
         setAvatarPreview(data.avatar || "");
       } catch {
         navigate("/login", { replace: true });
@@ -182,12 +182,6 @@ function Profile() {
               <label className="input-label">Website</label>
               <input className="input-field" type="url" placeholder="https://yoursite.com" value={form.website}
                 onChange={(e) => setForm({ ...form, website: e.target.value })} />
-
-              <label className="checkbox-row">
-                <input type="checkbox" checked={form.isPrivate}
-                  onChange={(e) => setForm({ ...form, isPrivate: e.target.checked })} />
-                <span className="input-label" style={{ margin: 0 }}>Private account</span>
-              </label>
 
               <div className="btn-row">
                 <button className="btn btn-primary" type="submit" disabled={isSubmitting}>

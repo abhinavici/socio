@@ -27,20 +27,6 @@ exports.followUser = asyncHandler(async (req, res, next) => {
     return next(httpError(400, msg));
   }
 
-  if (targetUser.isPrivate) {
-    // Create a pending follow request
-    await Follow.create({ follower: myId, following: targetId, status: "pending" });
-
-    // Notify the private account owner
-    await Notification.create({
-      recipient: targetId,
-      sender: myId,
-      type: "follow_request",
-    });
-
-    return res.status(201).json({ message: "Follow request sent", status: "pending" });
-  }
-
   // Public account — follow immediately
   await Follow.create({ follower: myId, following: targetId, status: "accepted" });
   await User.findByIdAndUpdate(myId, { $inc: { followingCount: 1 } });
@@ -54,72 +40,6 @@ exports.followUser = asyncHandler(async (req, res, next) => {
   });
 
   res.status(201).json({ message: "Followed successfully", status: "accepted" });
-});
-
-/**
- * PATCH /api/follow/:userId/accept
- * Accept a follow request (called by the account owner)
- */
-exports.acceptFollowRequest = asyncHandler(async (req, res, next) => {
-  const requesterId = req.params.userId; // the person who sent the request
-  const myId = req.user;
-
-  const follow = await Follow.findOne({
-    follower: requesterId,
-    following: myId,
-    status: "pending",
-  });
-
-  if (!follow) return next(httpError(404, "No pending follow request found"));
-
-  follow.status = "accepted";
-  await follow.save();
-
-  // Update counts
-  await User.findByIdAndUpdate(requesterId, { $inc: { followingCount: 1 } });
-  await User.findByIdAndUpdate(myId, { $inc: { followersCount: 1 } });
-
-  // Notify the requester that their request was accepted
-  await Notification.create({
-    recipient: requesterId,
-    sender: myId,
-    type: "follow_accepted",
-  });
-
-  // Remove the original follow_request notification (clean up)
-  await Notification.findOneAndDelete({
-    recipient: myId,
-    sender: requesterId,
-    type: "follow_request",
-  });
-
-  res.json({ message: "Follow request accepted" });
-});
-
-/**
- * DELETE /api/follow/:userId/reject
- * Reject a follow request
- */
-exports.rejectFollowRequest = asyncHandler(async (req, res, next) => {
-  const requesterId = req.params.userId;
-  const myId = req.user;
-
-  const deleted = await Follow.findOneAndDelete({
-    follower: requesterId,
-    following: myId,
-    status: "pending",
-  });
-
-  if (!deleted) return next(httpError(404, "No pending follow request found"));
-
-  // Clean up the notification too
-  await Notification.findOneAndDelete({
-    recipient: myId,
-    sender: requesterId,
-    type: "follow_request",
-  });
-
-  res.json({ message: "Follow request rejected" });
 });
 
 /**
@@ -157,20 +77,7 @@ exports.getFollowStatus = asyncHandler(async (req, res) => {
 
   res.json({
     isFollowing: follow?.status === "accepted",
-    isPending: follow?.status === "pending",
   });
-});
-
-/**
- * GET /api/follow/requests
- * Get pending follow requests for the logged-in user
- */
-exports.getFollowRequests = asyncHandler(async (req, res) => {
-  const requests = await Follow.find({ following: req.user, status: "pending" })
-    .populate("follower", "name username avatar userId")
-    .sort({ createdAt: -1 });
-
-  res.json(requests.map((r) => r.follower));
 });
 
 /**

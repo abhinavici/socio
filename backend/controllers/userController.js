@@ -30,7 +30,7 @@ exports.getProfile = asyncHandler(async (req, res, next) => {
  * Update current user's profile (name, username, bio, website, isPrivate)
  */
 exports.updateProfile = asyncHandler(async (req, res, next) => {
-  const { name, username, bio, website, isPrivate } = req.body;
+  const { name, username, bio, website } = req.body;
 
   const user = await User.findById(req.user);
   if (!user) return next(httpError(404, "User not found"));
@@ -45,7 +45,6 @@ exports.updateProfile = asyncHandler(async (req, res, next) => {
   if (username) user.username = username.toLowerCase().trim();
   if (bio !== undefined) user.bio = bio;
   if (website !== undefined) user.website = website;
-  if (isPrivate !== undefined) user.isPrivate = isPrivate;
 
   await user.save();
 
@@ -110,7 +109,7 @@ exports.searchUsers = asyncHandler(async (req, res, next) => {
       { username: { $regex: query, $options: "i" } },
     ],
   })
-    .select("name username avatar userId followersCount isPrivate")
+    .select("name username avatar userId followersCount")
     .limit(10);
 
   res.json(users);

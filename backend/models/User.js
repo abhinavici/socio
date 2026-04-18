@@ -53,10 +53,11 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    isPrivate: {
-      type: Boolean,
-      default: false,
-    },
+// private account feature can be implemented in the future if needed
+    // isPrivate: {
+    //   type: Boolean,
+    //   default: false,
+    // },
   },
   { timestamps: true }
 );

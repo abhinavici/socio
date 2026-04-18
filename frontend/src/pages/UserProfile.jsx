@@ -21,7 +21,6 @@ function UserProfile() {
         setUser(profileData);
         const { data: statusData } = await API.get(`/follow/${profileData._id}/status`);
         if (statusData.isFollowing)   setFollowState("following");
-        else if (statusData.isPending) setFollowState("pending");
         else                           setFollowState("none");
       } catch (error) {
         setErrorMessage(getErrorMessage(error, "User not found."));
@@ -145,12 +144,7 @@ function UserProfile() {
               )}
             </div>
           </div>
-
-          {user.isPrivate && followState !== "following" && (
-            <div className="private-account-notice">
-              🔒 This account is private. Follow to see their content.
-            </div>
-          )}
+          
         </main>
       </div>
     </>
