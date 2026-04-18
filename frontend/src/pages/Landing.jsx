@@ -886,8 +886,10 @@ function Landing() {
             <div className="landing-footer__col">
               <h4>Connect</h4>
               <ul>
-                <li><a href="#">GitHub</a></li>
-                <li><a href="#">Contact Us</a></li>
+                <li><a href="https://github.com/abhinavici">GitHub</a></li>
+                <li><a href="mailto:iabhinav216@gmail.com">Contact Us</a></li>
+                <li><a href="https://www.instagram.com/__iamabhinav__">Instagram</a></li>
+                <li><a href="https://www.linkedin.com/in/abhinavici/">LinkedIn</a></li>
               </ul>
             </div>
           </div>
